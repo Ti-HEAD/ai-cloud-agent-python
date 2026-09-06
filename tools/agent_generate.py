@@ -64,7 +64,7 @@ def call_hf_model(prompt: str, max_tokens=512) -> str:
 def prepare_prompt(issue_title: str, issue_body: str) -> str:
     return f"""
 You are a code generation assistant. Given the following Issue title and body for a Python FastAPI project, produce a JSON object with the structure:
-{{"files": [{{"path": "path/to/file.py", "content": "PLAIN_TEXT"}}, ...], "commit_message": "...", "pr_body": "..."}}
+{"{"}"files{"}"": [{"{"}"path": "path/to/file.py", "content": "PLAIN_TEXT"{"}"}, ...], "commit_message": "...", "pr_body": "..."}
 
 Issue title:
 {issue_title}
@@ -76,7 +76,7 @@ Rules:
 - Only include files needed to implement the MVP for the issue.
 - Ensure code is valid Python and include minimal tests runnable with pytest.
 - Keep files small and focused.
-- Response MUST be valid JSON only (no extra commentary). If you cannot, respond with {{"error":"explain reason"}}.
+- Response MUST be valid JSON only (no extra commentary). If you cannot, respond with {"{"}"error":"explain reason"{"}"}.
 """
 
 def try_parse_json_from_text(text: str):
