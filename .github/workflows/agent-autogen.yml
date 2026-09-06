@@ -1,0 +1,62 @@
+name: Agent Autogen
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process (optional for manual run)'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check event is correct label (issues only)
+        if: github.event_name == 'issues'
+        run: |
+          LABEL="${{ github.event.label.name }}"
+          echo "Label: $LABEL"
+          if [ "$LABEL" != "autogen" ]; then
+            echo "Not the autogen label. Exiting."
+            exit 0
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install deps
+        run: pip install requests PyGithub
+
+      - name: Determine ISSUE_NUMBER
+        run: |
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            echo "ISSUE_NUMBER=${{ github.event.issue.number }}" >> $GITHUB_ENV
+          elif [ -n "${{ github.event.inputs.issue_number }}" ]; then
+            echo "ISSUE_NUMBER=${{ github.event.inputs.issue_number }}" >> $GITHUB_ENV
+          else
+            echo "No issue number provided" && exit 1
+          fi
+
+      - name: Run agent generator (with HF)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HF_API_TOKEN: ${{ secrets.HF_API_TOKEN }}
+          MODEL_ID: ${{ secrets.MODEL_ID }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
+        run: |
+          python tools/agent_generate.py
