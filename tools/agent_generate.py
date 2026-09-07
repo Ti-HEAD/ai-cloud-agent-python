@@ -76,7 +76,7 @@ Rules:
 - Only include files needed to implement the MVP for the issue.
 - Ensure code is valid Python and include minimal tests runnable with pytest.
 - Keep files small and focused.
-- Response MUST be valid JSON only (no extra commentary). If you cannot, respond with {"error":"explain reason"}.
+- Response MUST be valid JSON only (no extra commentary). If you cannot, respond with {{"error":"explain reason"}}.
 """
 
 def try_parse_json_from_text(text: str):
