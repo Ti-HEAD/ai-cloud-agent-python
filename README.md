@@ -1,2 +1,1 @@
-# ai-cloud-agent-python
-AIクラウドエージェント（FastAPI）自動生成ワークフロー用
+# Autogen fallback for issue #4

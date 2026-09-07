@@ -1,0 +1,1 @@
+HTTPSConnectionPool(host='api-inference.huggingface.co', port=443): Max retries exceeded with url: /models/gpt2 (Caused by NameResolutionError("HTTPSConnection(host='api-inference.huggingface.co', port=443): Failed to resolve 'api-inference.huggingface.co' ([Errno -5] No address associated with hostname)"))
