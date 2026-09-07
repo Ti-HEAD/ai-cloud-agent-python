@@ -76,7 +76,7 @@ Rules:
 - Only include files needed to implement the MVP for the issue.
 - Ensure code is valid Python and include minimal tests runnable with pytest.
 - Keep files small and focused.
-- Response MUST be valid JSON only (no extra commentary). If you cannot, respond with {{"error":"explain reason"}}.
+- Response MUST be valid JSON only (no extra commentary). If you cannot, respond with {"error":"explain reason"}.
 """
 
 def try_parse_json_from_text(text: str):
@@ -120,6 +120,12 @@ Please review the changes. CI will run automatically.
     url = f"{GITHUB_API}/repos/{owner}/{repo}/pulls"
     payload = {"title": title, "head": branch_name, "base": base_branch, "body": body}
     r = requests.post(url, headers=headers, json=payload)
+    # Debug output: show status and response body to help diagnose 4xx/5xx
+    print("PR create status:", r.status_code)
+    try:
+        print("PR create response:", r.text)
+    except Exception:
+        print("PR create response: <unprintable>")
     r.raise_for_status()
     pr = r.json()
     print("PR created:", pr.get("html_url"))
